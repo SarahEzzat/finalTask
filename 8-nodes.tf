@@ -7,7 +7,7 @@ resource "aws_eks_node_group" "k8s-ng" {
   capacity_type   = "${var.capacity}"
   instance_types  = ["${var.ins_type}"]
   remote_access {
-    ec2_ssh_key     = "${var.ssh_key}"   
+    ec2_ssh_key     = aws_key_pair.kp.key_name   
   }
  
   scaling_config {
