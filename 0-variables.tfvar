@@ -34,4 +34,5 @@ min-n = 2
 ami_type = "AL2_x86_64"
 capacity = "ON_DEMAND"
 ins_type = "t3.medium"
+ssh_key = "ansible-test"
 desired-n = 2 

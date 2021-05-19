@@ -40,4 +40,5 @@ variable "min-n" {}
 variable "ami_type" {}
 variable "capacity" {}
 variable "ins_type" {}
+variable "ssh_key"  {}
 variable "desired-n" {}
