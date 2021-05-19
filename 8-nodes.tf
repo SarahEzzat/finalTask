@@ -10,8 +10,6 @@ resource "aws_eks_node_group" "k8s-ng" {
     ec2_ssh_key     = "${var.ssh_key}"   
   }
  
-  
-
   scaling_config {
     desired_size = "${var.desired-n}"
     max_size     = "${var.max-n}"
