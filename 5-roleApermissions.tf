@@ -61,9 +61,9 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy-attach" {
 
 #--------------- adding permissions to ex2 role of k8s cluster ------------------------------
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy-ec2" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.k8s-ec.name
+resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy-ec2" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.k8s-ec2.name
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly-ec2" {

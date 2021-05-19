@@ -1,4 +1,4 @@
-resource "aws_route_table" "rtbs_pub" {
+resource "aws_route_table" "rtb_pub" {
   vpc_id = aws_vpc.k8s.id
 
   route {
@@ -7,7 +7,7 @@ resource "aws_route_table" "rtbs_pub" {
   }
 
   tags = {
-    Name = "example"
+    Name = "${var.rtb_name}"
   }
 }
 
@@ -15,11 +15,11 @@ resource "aws_route_table" "rtbs_pub" {
 
 resource "aws_route_table_association" "a" {
   subnet_id      = aws_subnet.sub1-k8s.id
-  route_table_id = aws_route_table.rtbs_pub.id
+  route_table_id = aws_route_table.rtb_pub.id
 }
 
 
 resource "aws_route_table_association" "b" {
   subnet_id      = aws_subnet.sub2-k8s.id
-  route_table_id = aws_route_table.rtbs_pub.id
+  route_table_id = aws_route_table.rtb_pub.id
 }
