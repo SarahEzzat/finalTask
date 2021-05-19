@@ -2,7 +2,7 @@
 #   name = "example"
 # }
 
-#-------------- this role for k8s cluster
+#-------------- this role for k8s cluster --------------------------------------------------
 resource "aws_iam_role" "cluser-role" {
   name = "eks-cluster-role"
 
@@ -21,7 +21,7 @@ resource "aws_iam_role" "cluser-role" {
 }
 POLICY
 }
-#---------------- this to create role for ec2 nodes
+#---------------- this to create role for ec2 nodes --------------------------------------
 resource "aws_iam_role" "k8s-ec2" {
   name = "eks-node-group-example"
 
@@ -37,7 +37,7 @@ resource "aws_iam_role" "k8s-ec2" {
   })
 }
 
-#-------------- adding permissions to cluster k8s
+#-------------- adding permissions to cluster k8s ----------------------------------------
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy-attach" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
@@ -59,7 +59,8 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy-attach" {
   role       = aws_iam_role.k8s-ec2.name
 }
 
-#--------------- adding permissions to ex2 role of k8s cluster
+#--------------- adding permissions to ex2 role of k8s cluster ------------------------------
+
 resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy-attach" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.k8s-ec.name
