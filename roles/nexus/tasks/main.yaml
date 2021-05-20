@@ -1,0 +1,63 @@
+- name: Upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: instal wget
+  yum:
+    name: wget
+    state: latest
+
+- name: Creates Directory
+  file: 
+    path: /app
+    state: directory
+
+- name: Download default.conf
+  get_url:
+    url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+    dest: /app/nexus.tar.gz
+    mode: '0440'
+
+- name: Unarchive a file that is aleady on the remote machine
+  unarchive: 
+    src: /app/nexus.tar.gz
+    dest: /app/
+    remote_src: yes
+
+- name: configure  /app/nexus/bin/nexus.rc
+  lineinfile: 
+    path: /app/nexus-3.30.1-01/bin/nexus.rc
+    line: run_as_user="nexus"
+
+- name: configure nexus.service
+  blockinfile: 
+      path: /etc/systemd/system/nexus.service
+      create: yes
+      block: |
+       [Unit]
+       Description=nexus_service
+       After=network.target
+
+       [Service]
+       Type=forking
+       LimitNOFILE=65536
+       User=nexus
+       Group=nexus
+       ExecStart=/app/nexus-3.30.1-01/bin/nexus  start
+       ExecStop=/app/nexus-3.30.1-01/bin/nexus  stop
+       User=nexus
+       Restart=on-abort
+
+       [Install]
+       WantedBy=multi-user.target
+  
+      
+- name: chkconfig 
+  shell:  chkconfig nexus on
+
+- name: start nexus
+  service:
+      name: nexus
+      state: started
+       
