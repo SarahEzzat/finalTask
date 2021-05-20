@@ -6,3 +6,4 @@
   roles:
      - role: jenkins
      - role: nexus
+     - role: sonarqube

@@ -1,0 +1,123 @@
+
+- name: Upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: instal wget
+  yum:
+    name: wget
+    state: latest
+
+- name: Install Java
+  yum:
+    name: java-1.8.0-openjdk.x86_64
+    state: present
+
+- name: Commands to prepare the system
+  shell: setenforce 0
+  shell: sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+  
+
+- name: edit file of sysctl
+  blockinfile:
+      path: /etc/sysctl.conf
+      create: no
+      block: |
+        # sysctl settings are defined through files in
+        # /usr/lib/sysctl.d/, /run/sysctl.d/, and /etc/sysctl.d/.
+        #
+        # Vendors settings live in /usr/lib/sysctl.d/.
+        # To override a whole file, create a new file with the same in
+        # /etc/sysctl.d/ and put new settings there. To override
+        # only specific settings, add a file with a lexically later
+        # name in /etc/sysctl.d/ and put new settings there.
+        #
+        # For more information, see sysctl.conf(5) and sysctl.d(5).
+        fs.inotify.max_user_watches=524288
+        fs.inotify.max_user_instances=8192 
+        vm.max_map_count=262144   
+        fs.file-max=65536
+# for amazon instances
+  
+- name: 
+  yum:
+    name: epel-release
+    state: present
+      
+- name: Install PostgreSQL repo
+  blockinfile:
+      path: /etc/yum.repos.d/pgdg.repo
+      create: yes
+      block: |
+        [pgdg10]
+        name=PostgreSQL 10 for RHEL/CentOS 7 - x86_64
+        baseurl=https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64
+        enabled=1
+        gpgcheck=0
+
+- name: Install PostgreSQL
+  yum:
+    name: postgresql10x86_64
+    state: latest
+    name: postgresql10-server.x86_64
+    state: latest
+    name: postgresql10-libs.x86_64
+    state: latest
+
+- name: init potgresql to start 
+  command: /usr/pgsql-10/bin/postgresql-10-setup initdb
+  args:
+        creates: /var/lib/pgsql/10/data
+
+- name : Start postgres sql
+  service: 
+     name: postgresql-10
+     state: started
+
+- name: Remove old pg_hba
+  shell: rm -f /var/lib/pgsql/10/data/pg_hba.conf
+ 
+- name: Config pg_hba
+  blockinfile:
+      path: /var/lib/pgsql/10/data/pg_hba.conf
+      create: yes
+      block: |
+           # TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+           # "local" is for Unix domain socket connections only
+           local   all             all                                     trust
+           # IPv4 local connections:
+           host    all             all             127.0.0.1/32            md5
+           # IPv6 local connections:
+           host    all             all             ::1/128                 md5
+           # Allow replication connections from localhost, by a user with the
+           # replication privilege.
+           local   replication     all                                     trust
+           host    replication     all             127.0.0.1/32            md5
+           host    replication     all             ::1/128                 md5
+
+- name : Restart postgres sql
+  service:
+     name: postgresql-10
+     state: restarted
+
+
+- name: install python-psycopg2 fot postgresql adding users
+  yum:
+    name: python-psycopg2
+    state: present
+
+- name: create sonar_db 
+  postgresql_db:
+    name: sonar_db
+
+
+- name: Create user sonor to access sonar_db 
+  postgresql_user:
+    db: sonar_db
+    name: sonar
+    password: NULL
+    priv: "ALL/ALL"
+
+
