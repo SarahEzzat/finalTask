@@ -20,6 +20,9 @@
   service: 
     name: jenkins
     state: started
+- name: Pass initialAdminPassword
+  command: pass_jen=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
+  command: curl --form "security-token="$pass_jen"" http://localhost:8080/login  
   #dnf :
    # name: jenkins
    # state: present

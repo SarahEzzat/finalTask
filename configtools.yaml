@@ -1,4 +1,7 @@
 - hosts: k8snodes
+ # vars:
+ #   pass_jen: "{{ lookup('file', '/var/lib/jenkins/secrets/initialAdminPassword') }}"
+#    debug: msg="{{ pass_jen.stdout }}"  
   become: true
   roles:
      - role: jenkins
