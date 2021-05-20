@@ -97,7 +97,7 @@
            host    replication     all             127.0.0.1/32            md5
            host    replication     all             ::1/128                 md5
 
-- name : Restart postgres sql
+- name: Restart postgres sql
   service:
      name: postgresql-10
      state: restarted
@@ -120,4 +120,73 @@
     password: NULL
     priv: "ALL/ALL"
 
+- name: Install pkg of sonar
+  get_url:
+    url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.9.5.zip
+    dest: /opt/
 
+- name: Extract pkg of sonar
+  unarchive:
+    src: /opt/sonarqube-7.9.5.zip
+    dest: /opt/
+    remote_src: yes 
+
+- name: Config pg_hba
+  blockinfile:
+      path: /opt/sonarqube-7.9.5/conf/sonor.properties
+      create: yes
+      block: |
+       ##Database details
+       sonar.jdbc.username=sonar
+       sonar.jdbc.password=NULL
+       sonar.jdbc.url=jdbc:postgresql://localhost/sonar_db
+
+       ##How you will access SonarQube Web UI
+       sonar.web.host=localhost
+       sonar.web.port=9000
+
+       ##Java options
+       sonar.web.javaOpts=-server -Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError
+       sonar.search.javaOpts=-server -Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError
+
+       ##Also add the following Elasticsearch storage paths
+       sonar.path.data=/opt/sonarqube-7.9.5/data
+       sonar.path.temp=/opt/sonarqube-7.9.5/temp
+
+- name: Set sonar ownership
+  command: chown -R sonar:sonar /opt/sonarqube-7.9.5 
+
+- name: Add java command to wrapper.conf
+  lineinfile: 
+    path: /opt/sonarqube-7.9.5/conf/wrapper.conf
+    line: wrapper.java.command=/usr/bin/java
+
+- name: Add service of sonarqube to systemd
+  blockinfile:
+      path: /etc/systemd/system/sonarqube.service
+      create: yes
+      block: |
+        [Unit]
+        Description=SonarQube service
+        After=syslog.target network.target
+
+        [Service]
+        Type=forking
+        ExecStart=/opt/sonarqube-7.9.5/bin/linux-x86-64/sonar.sh start
+        ExecStop=/opt/sonarqube-7.9.5/bin/linux-x86-64/sonar.sh stop
+        LimitNOFILE=65536
+        LimitNPROC=4096
+        User=sonar
+        Group=sonar
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
+
+- name: load service to systemd 
+  systemd: daemon_reload=yes
+
+- name: Start sonar service
+  service:
+    name: sonarqube
+    state: started
