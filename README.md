@@ -166,8 +166,12 @@ c- pipline
        secret key : XXXXXXXX
     *** ID : sara.refaat     >>> thats the id which u will use to call credentials in groovy
       NOTE** : to get ur key id and secret key u need to visit amazon servies > iam > security credentials > create key > download ur .crv file or just copy ur key id and secret key to safe place
-    
-    - from the same concept go to ur master of ur cluster and find .kube/kube.config
+    - configure kubectl using :
+        curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+        chmod +x ./kubectl
+        echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+        
+    - from the same concept go to ur cluster and find .kube/kube.config
       u will find it on ur homw cat the file copy it and add u credential with type file then paste config content DONT FORGET TO SET ID 
     
 3) there will be a build with parameter on the left of jenkins dashboard use it to test diff envs
