@@ -5,6 +5,9 @@ DevOps task
 
    u can git all foles via: 
             https://github.com/SarahRefaat/finalTask.git
+ 
+a- terraform
+
 1) u need to install terraform :
    
    
@@ -74,7 +77,7 @@ DevOps task
                  creates nodes u can controller their capacity using varibles file
           note**: using depends_on to make sure roles and permission will be built first
 
-======================================================================================================
+======================================================================
 b- ansible
 
    
@@ -112,4 +115,69 @@ b- ansible
      -  for sonarqube default credentials are :
                 username : admin
                 password : admin
+
+=========================================================
+c- pipline 
+
+
+1) using installed jenkins , php shopping cart app (main product)
+
+
+   note**: to apply the concept of ci/cd ur code must be release, if okay and done upload it to master
+         : we have three branches for three stapes :
+                - dev
+                - test
+                - prod
+         : we deploy our code to deployment within the name of target stage
+         
+2) file on branch ci/cd :
+    
+      - build image using our app then push it to nexus
+        HOW ??
+
+   - u will need first to create hosted repo :
+        here its name is my-repo 
+
+   - then set allow http with whatever free port :
+        here it is 9000
+
+   note** : many steps tp apply pushing to nexus correctly
+          
+          - dont forget to login coz default docker registry is dockerhub
+          - dont forget to tag image with link of repo name as jenkins file did
+          - dont forget to allow Docker token in nexus from settings > Releams
+          - u can allow https in case u used ssl certificate 
+          - u need to create  sudo nano /etc/docker/daemon.json file and add ur {host:port} like that :
+               { "insecure-registries":["3.82.203.20:9000"] }
+          - then don't forget to run :  
+               systemctl daemon-reload
+               systemctl restart nexus
+   
+          - once image pushed u can see it using url of repo
+
+        - in the second stage u need to install aws credential plugin in jenkins
+           HOW ??
+    
+    - mange jenkins > plugins > avaiable > install > retsrat after installing
+    
+    - manage jenkins > mange credentials > jenkins > add credentials > 
+       type : aws crediential
+       key id : XXxXXXX
+       secret key : XXXXXXXX
+    *** ID : sara.refaat     >>> thats the id which u will use to call credentials in groovy
+      NOTE** : to get ur key id and secret key u need to visit amazon servies > iam > security credentials > create key > download ur .crv file or just copy ur key id and secret key to safe place
+    
+    - from the same concept go to ur master of ur cluster and find .kube/kube.config
+      u will find it on ur homw cat the file copy it and add u credential with type file then paste config content DONT FORGET TO SET ID 
+    
+3) there will be a build with parameter on the left of jenkins dashboard use it to test diff envs
+
+
+NOTES** : dont forget to add webhooks on ur repo git to build once something new is pushed to the repo
+        - ur-repo > settings > webhooks > add > url <of ur jenkins//github-webhook/> update 
+               u can choose whether json or x-www-form-urlencoded : feel free to choose the readable one for u
+
+
+hope all is clear and enjoy :)
+               
 
