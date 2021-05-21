@@ -18,6 +18,7 @@ pipeline {
                 }           
                 if (params.CHOICE == "dev"||params.CHOICE == "test"||params.CHOICE == "prod"){
                  withAWS(credentials: 'sara.refaat') {
+                 sh "sudo apt-get install awscli"
                  sh "aws eks --region us-east-1 update-kubeconfig --name eks_k8s"
                }
                withCredentials([file(credentialsId: 'kube-eks', variable: 'KUBECONFIG')]){
