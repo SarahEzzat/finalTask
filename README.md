@@ -148,7 +148,7 @@ c- pipline
           - dont forget to allow Docker token in nexus from settings > Releams
           - u can allow https in case u used ssl certificate 
           - u need to create  sudo nano /etc/docker/daemon.json file and add ur {host:port} like that :
-               { "insecure-registries":["3.82.203.20:9000"] }
+               { "insecure-registries":["localhost:9000"] }
           - then don't forget to run :  
                systemctl daemon-reload
                systemctl restart nexus
