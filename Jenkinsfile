@@ -10,20 +10,25 @@ pipeline {
               script{
                 if(params.CHOICE == "release"){
                     git 'https://github.com/SarahRefaat/finalTask'
-                    sh " docker build -< Dockerfile -t 3.82.203.20:9000/repository/my-repo:$BUILD_NUMBER" 
+                    sh " docker build -< Dockerfile -t localhost:9000/repository/my-repo:$BUILD_NUMBER" 
                     withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
-                     sh "login -u $USERNAME -p $PASSWORD http://3.82.203.20:9000" 
-                     sh "docker push 3.82.203.20:9000/repository/my-repo:$BUILD_NUMBER"
+                     sh "login -u $USERNAME -p $PASSWORD localhost:9000" 
+                     sh "docker push localhost:9000/repository/my-repo:$BUILD_NUMBER"
                    }
                 }           
-                //else if (params.CHOICE == "dev"||params.CHOICE == "test"||params.CHOICE == "prod"){
-               // sh "kubectl create ns "$params.CHOICE""
-               // sh "git checkout "$param.CHOICE""
-                // sh "kubectl apply -f deployment.yaml -n "$param.CHOICE""
-                // sh "kubectl apply -f service.yaml -n "$param.CHOICE""
-                //}
+                if (params.CHOICE == "dev"||params.CHOICE == "test"||params.CHOICE == "prod"){
+                 withAWS(credentials: 'sara.refaat') {
+                 sh "aws eks --region us-east-1 update-kubeconfig --name eks_k8s"
+               }
+               withCredentials([file(credentialsId: 'kube-eks', variable: 'KUBECONFIG')]){
+                sh "kubectl create ns "$params.CHOICE""
+                sh "git checkout "$param.CHOICE""
+                sh "kubectl apply -f deployment.yaml -n "$param.CHOICE"
+                sh "kubectl apply -f service.yaml -n "$param.CHOICE"
+                }
               }
            }
+          }
         }
       }
     }
