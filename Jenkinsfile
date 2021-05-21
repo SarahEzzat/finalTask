@@ -20,12 +20,12 @@ pipeline {
                       sh "sudo docker push $registey/dockerImage"
                    }
                 }           
-                else if (params.CHOICE == "dev"||params.CHOICE == "test"||params.CHOICE == "prod"){
-                 sh "kubectl create ns "$params.CHOICE""
-                 sh "git checkout "$param.CHOICE""
-                 sh "kubectl apply -f deployment.yaml -n "$param.CHOICE""
-                 sh "kubectl apply -f service.yaml -n "$param.CHOICE""
-                }
+                #else if (params.CHOICE == "dev"||params.CHOICE == "test"||params.CHOICE == "prod"){
+                # sh "kubectl create ns "$params.CHOICE""
+                # sh "git checkout "$param.CHOICE""
+                # sh "kubectl apply -f deployment.yaml -n "$param.CHOICE""
+                # sh "kubectl apply -f service.yaml -n "$param.CHOICE""
+                #}
               }
            }
         }
