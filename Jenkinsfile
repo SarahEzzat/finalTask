@@ -10,10 +10,10 @@ pipeline {
               script{
                 if(params.CHOICE == "release"){
                     git 'https://github.com/SarahRefaat/finalTask'
-                    dockerImage = docker build -< Dockerfile -t 3.82.203.20:9000/repository/my-repo:$BUILD_NUMBER 
+                    sh " docker build -< Dockerfile -t 3.82.203.20:9000/repository/my-repo:$BUILD_NUMBER" 
                     withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
                      sh "login -u $USERNAME -p $PASSWORD http://3.82.203.20:9000" 
-                     sh "docker push $dockerImage"
+                     sh "docker push 3.82.203.20:9000/repository/my-repo:$BUILD_NUMBER"
                    }
                 }           
                 //else if (params.CHOICE == "dev"||params.CHOICE == "test"||params.CHOICE == "prod"){
