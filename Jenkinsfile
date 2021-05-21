@@ -23,8 +23,8 @@ pipeline {
                withCredentials([file(credentialsId: 'kube-eks', variable: 'KUBECONFIG')]){
                 sh "kubectl create ns "$params.CHOICE""
                 sh "git checkout "$param.CHOICE""
-                sh "kubectl apply -f deployment.yaml -n "$param.CHOICE"
-                sh "kubectl apply -f service.yaml -n "$param.CHOICE"
+                sh "kubectl apply -f deployment.yaml -n $param.CHOICE"
+                sh "kubectl apply -f service.yaml -n $param.CHOICE"
                 }
               }
            }
