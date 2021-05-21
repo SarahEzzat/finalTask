@@ -15,7 +15,7 @@ pipeline {
               script{
                 if(params.CHOICE == "release"){
                     git 'https://github.com/SarahRefaat/finalTask'
-                    dockerImage = docker.build "nexus-image-:$BUILD_NUMBER" 
+                    dockerImage = docker.build "nexus-image:$BUILD_NUMBER" 
                     withCredentials([usernamePassword(credentialsId: 'nexus')]){
                       sh "sudo docker push $registey/dockerImage"
                    }
