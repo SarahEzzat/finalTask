@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: sacpc/jen:4
+        image: localhost:9000/repository/my-repo:4
