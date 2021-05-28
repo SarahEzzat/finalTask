@@ -10,7 +10,7 @@
 
 - name: Creates Directory
   file: 
-    path: /app
+    path: /test
     state: directory
 
 - name: Download default.conf
@@ -21,8 +21,8 @@
 
 - name: Unarchive a file that is aleady on the remote machine
   unarchive: 
-    src: /app/nexus.tar.gz
-    dest: /app/
+    src: /test/nexus.tar.gz
+    dest: /test/
     remote_src: yes
 
 - name: configure  /app/nexus/bin/nexus.rc
@@ -52,9 +52,6 @@
        [Install]
        WantedBy=multi-user.target
   
-      
-- name: chkconfig 
-  shell:  chkconfig nexus on
 
 - name: start nexus
   service:
