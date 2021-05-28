@@ -9,7 +9,7 @@ pipeline {
             steps{
               script{
                 if(params.CHOICE == "release"){
-                    git 'https://github.com/SarahRefaat/finalTask'
+                    git 'https://github.com/SarahEzzat/finalTask'
                     sh " docker build -< Dockerfile -t localhost:9000/repository/my-repo:$BUILD_NUMBER" 
                     withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
                      sh "docker login -u $USERNAME -p $PASSWORD localhost:9000" 
